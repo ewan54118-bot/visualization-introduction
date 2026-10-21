@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#4338ca">
+  <meta name="description" content="可视化导论交互学习平台：27 个知识小节、交互实验、章节自测与个人学习笔记。从数据出发，让洞察发生。">
+  <title>可视化导论 · VIS Lab</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./learning-demos.css">
+  <link rel="stylesheet" href="./reading.css">
+  <script defer src="./content.js"></script>
+  <script defer src="./i18n.js"></script>
+  <script defer src="./lesson-details.js"></script>
+  <script defer src="./content-en.js"></script>
+  <script defer src="./ui-en.js"></script>
+  <script defer src="./demo-en.js"></script>
+  <script defer src="./locale-complete.js"></script>
+  <script defer src="./theory-connections.js"></script>
+  <script defer src="./demo-inspector.js"></script>
+  <script defer src="./learning-demos.js"></script>
+  <script defer src="./lesson-reading.js"></script>
+  <script defer src="./app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳至主要内容</a>
+  <div id="app"></div>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-head"><span id="search-title">搜索课程知识</span><button class="icon-button" data-action="close-search" aria-label="关闭搜索">×</button></div>
+    <label class="sr-only" for="global-search">输入知识点或关键词</label>
+    <input id="global-search" type="search" placeholder="搜索章节、知识点、D3 API…" autocomplete="off">
+    <div id="search-results"></div>
+    <div class="search-foot">支持中文与英文关键词 <kbd>Esc</kbd> 关闭</div>
+  </dialog>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <noscript>请启用 JavaScript，以使用交互实验、课程阅读和本地学习记录。</noscript>
+</body>
+</html>

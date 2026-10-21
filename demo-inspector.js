@@ -1,0 +1,21 @@
+/* Inspect the same canonical arrays and functions used by the SVG renderers. */
+window.DemoInspector={
+ build(s,p,r,lib){
+  const rows=[];let headers=['参数或指标','当前值','说明'];
+  for(const c of s.controls){const v=c.name==='value'?p.points[p.selected-1]:p[c.name],display=c.type==='select'?c.options.find(o=>String(o[0])===String(v))?.[1]:typeof v==='boolean'?(v?'开启':'关闭'):v;rows.push([c.label,String(display)+(c.unit||''),'交互参数']);}
+  for(const metric of r.metrics)rows.push([metric.label,metric.value,'实时计算结果']);
+  if(['transform','pipeline','tree','hierarchy'].includes(s.mode)){
+   headers=['学号','学院','专业','成绩 / 分','当前筛选'];return {headers,rows:lib.fieldRows.map(d=>[d.id,d.college,d.major,d.score,d.score>=p.threshold&&(!p.major||p.major==='all'||p.major===d.major)?'保留':'排除']),caption:'下表保留原始记录，并标出当前筛选状态。聚合结果见图中指标。'};
+  }
+  if(s.mode==='curves'){headers=['观测顺序','观测值','当前选择'];return {headers,rows:p.points.map((v,i)=>[i+1,v,i+1===p.selected?'选中':'—']),caption:'拖动或键盘调整会改变这里的原始观测；切换插值不会增加记录。'};}
+  if(['time','calendar'].includes(s.mode)){headers=['日期 / UTC','原始访问量 / 次','观测状态'];return {headers,rows:lib.daily.map((d,i)=>{const missing=p.missing&&(s.mode==='calendar'?i===28:i>=25&&i<=33);return [d.date.toISOString().slice(0,10),missing?'未观测':d.value,missing?'缺失':'已观测'];}),caption:'这里显示原始日值；聚合曲线使用当前窗口与统计量。未观测不补零。'};}
+  if(s.mode==='contours'){headers=['网格 x','网格 y','标量值','相对阈值'];const n=Number(p.resolution),data=[];for(let j=0;j<n;j++)for(let i=0;i<n;i++){const v=lib.field(i/(n-1),j/(n-1));data.push([i,j,Number(v.toFixed(3)),v>=p.threshold?'不低于阈值':'低于阈值']);}return {headers,rows:data,caption:'网格角点的实际计算值；线段交点通过边上线性插值得到。页面预览前 24 条，CSV 包含全部采样。'};}
+  if(s.mode==='gamut'){headers=['L*','a*','b*','R / sRGB','G / sRGB','B / sRGB','色域状态'];const rgb=lib.labRGB(p.lightness,p.a,p.b);return {headers,rows:[[p.lightness,p.a,p.b,...rgb.map(v=>Number(v.toFixed(5))),lib.inGamut(rgb)?'可显示':'越界']],caption:'保留未裁剪的 sRGB 通道，负值或大于 1 的通道解释越界原因。'};}
+  return {headers,rows,caption:'参数与实时指标来自当前演示状态。修改一个条件，再比较结果。'};
+ },
+ html(report){const e=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));return `<div class="learn-table-wrap"><table><thead><tr>${report.headers.map(v=>`<th scope="col">${e(v)}</th>`).join('')}</tr></thead><tbody>${report.rows.slice(0,24).map(row=>`<tr>${row.map(v=>`<td>${e(v)}</td>`).join('')}</tr>`).join('')}</tbody></table></div><p class="learn-table-caption">${e(report.caption)}</p><button type="button" class="text-link" data-demo-action="export-data" style="margin:0 16px 14px">导出本节计算明细 CSV</button>`;}
+};
+I18n.pairs([
+ ['参数与计算明细','Parameters and calculation details'],['参数或指标','Parameter or metric'],['当前值','Current value'],['说明','Role'],['交互参数','Control parameter'],['实时计算结果','Computed result'],['当前筛选','Current filter'],['保留','Retained'],['排除','Excluded'],['观测顺序','Observation index'],['观测值','Observed value'],['当前选择','Selection'],['选中','Selected'],['日期 / UTC','Date / UTC'],['原始访问量 / 次','Raw daily visits'],['观测状态','Observation status'],['已观测','Observed'],['网格 x','Grid x'],['网格 y','Grid y'],['标量值','Scalar value'],['相对阈值','Threshold relation'],['不低于阈值','At or above'],['低于阈值','Below'],['色域状态','Gamut status'],['导出本节计算明细 CSV','Export calculation details CSV'],['下表保留原始记录，并标出当前筛选状态。聚合结果见图中指标。','The table retains raw records and marks current filter membership. Aggregates appear in the chart metrics.'],['拖动或键盘调整会改变这里的原始观测；切换插值不会增加记录。','Dragging or keyboard adjustment changes these observations; interpolation adds no records.'],['这里显示原始日值；聚合曲线使用当前窗口与统计量。未观测不补零。','These are raw daily observations. The curve uses the selected window and statistic. Unknown values are not zero-filled.'],['网格角点的实际计算值；线段交点通过边上线性插值得到。页面预览前 24 条，CSV 包含全部采样。','These are the computed grid-corner values. Crossings use linear edge interpolation. The page previews 24 rows; CSV includes all samples.'],['保留未裁剪的 sRGB 通道，负值或大于 1 的通道解释越界原因。','Unclipped sRGB channels are retained so negative or above-one values explain the gamut violation.'],['参数与实时指标来自当前演示状态。修改一个条件，再比较结果。','Parameters and metrics reflect the current state. Change one condition and compare.'],['无变化','Unchanged'],['已改变','Changed'],['相对快照 A','Compared with snapshot A']
+]);
+I18n.pattern(/^变化 ([+-]?[\d.]+)(.*)$/,'Change $1$2');

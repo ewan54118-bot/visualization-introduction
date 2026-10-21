@@ -12,14 +12,20 @@ python -m http.server 8080
 
 浏览器访问 `http://localhost:8080`。也可以使用 VS Code 的 Live Server 扩展。直接打开 `index.html` 能显示页面，但建议使用 HTTP 服务，保证浏览器本地保存与剪贴板等功能正常工作。
 
-## 部署到自己的 GitHub Pages
+## GitHub Pages
+
+网站地址：[https://ewan54118-bot.github.io/visualization-introduction/](https://ewan54118-bot.github.io/visualization-introduction/)。
+
+此仓库使用 `main` 分支的 `/(root)` 目录发布；将更新推送到 `main` 后，GitHub Pages 会自动重新部署。根目录中的 `.nojekyll` 用于直接发布静态文件。
+
+### 部署到其他 GitHub Pages 仓库
 
 1. 将本文件夹的源码上传到你自己的 GitHub 仓库，确保 `index.html` 位于发布目录根部。
 2. 打开仓库 **Settings → Pages**。
 3. 选择 **Deploy from a branch**，选择你的分支（通常为 `main`）和 `/(root)`，保存。
 4. 等待 GitHub 完成部署，通过 Pages 页面给出的地址访问。
 
-所有站内静态资源使用相对路径，页面通过 URL hash 路由（如 `#course/1/0/read`），支持 `username.github.io/repository/` 子路径。刷新课程页不需要额外的服务器路由配置。本项目未执行远程发布。
+所有站内静态资源使用相对路径，页面通过 URL hash 路由（如 `#course/1/0/read`），支持 `username.github.io/repository/` 子路径。刷新课程页不需要额外的服务器路由配置。
 
 ## 功能
 
